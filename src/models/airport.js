@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const { Sequelize } = require('.');
 module.exports = (sequelize, DataTypes) => {
   class Airport extends Model {
     /**
@@ -12,44 +11,39 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.City,{
-        foreignKey:'cityId',
-     
+      this.belongsTo(models.City, {
+        foreignKey: 'cityId',
       });
-
-      this.hasMany(models.Flight,{
-        foreignKey:'departureAirportId',
-        onDelete:'CASCADE'
+      this.hasMany(models.Flight, {
+        foreignKey: 'departureAirportId',
+        onDelete: 'CASCADE'
       });
-      this.hasMany(models.Flight,{
-        foreignKey:'arrivalAirportId',
-        onDelete:'CASCADE'
+      this.hasMany(models.Flight, {
+        foreignKey: 'arrivalAirportId',
+        onDelete: 'CASCADE'
       });
     }
-  } 
+  }
   Airport.init({
-    name:{type: DataTypes.STRING,
-      allowNull:false,
-      unique:true
-    },
-
-    code:{
+    name: {
       type: DataTypes.STRING,
-      allowNull:false,
-      unique:true
+      allowNull: false,
+      unique: true
     },
-    address:{ type:DataTypes.STRING,
-      unique:true
-
+    code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
     },
-
-    cityId:{type:DataTypes.INTEGER,
-      allowNull:false
+    address: {
+      type: DataTypes.STRING,
+      unique: true,
     },
-   
-},
- 
-  {
+    cityId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
+  }, {
     sequelize,
     modelName: 'Airport',
   });

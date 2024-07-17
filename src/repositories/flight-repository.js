@@ -50,35 +50,36 @@ class FlightRepository extends CrudRepository {
         return response;
     }
 
-    // async updateRemainingSeats(flightId, seats, dec = true) {
-    //     const transaction = await db.sequelize.transaction();
-    //     try {
-    //         await db.sequelize.query(addRowLockOnFlights(flightId));
-    //         const flight = await Flight.findByPk(flightId);
-    //         if(+dec) {
-    //             await flight.decrement('totalSeats', {by: seats}, {transaction: transaction});
-    //         } else {
-    //             await flight.increment('totalSeats', {by: seats}, {transaction: transaction});
-    //         }
-    //         await transaction.commit();
-    //         return flight;
-    //     } catch(error) {
-    //         await transaction.rollback();
-    //         throw error;
-    //     }
-       
-    // }
-
-    async updateRemainingSeats(flightId,seats,dec=true){
-        await db.sequelize.query(addRowLockOnFlights(flightId));
-        const flight=await Flight.findByPk(flightId);
-        if(+dec){
-            await flight.decrement('totalSeats',{by:seats});
-        }else {
-            await flight.increment('totalSeats',{by:seats});
+    async updateRemainingSeats(flightId, seats, dec = true) {
+        const transaction = await db.sequelize.transaction();
+        try {
+            await db.sequelize.query(addRowLockOnFlights(flightId));
+            const flight = await Flight.findByPk(flightId);
+            if(+dec) {
+                await flight.decrement('totalSeats', {by: seats}, {transaction: transaction});
+            } else {
+                await flight.increment('totalSeats', {by: seats}, {transaction: transaction});
+            }
+            await transaction.commit();
+            return flight;
+        } catch(error) {
+            // console.log(error);
+            await transaction.rollback();
+            throw error;
         }
-        return flight;
+       
     }
+
+    // async updateRemainingSeats(flightId,seats,dec=true){
+    //     await db.sequelize.query(addRowLockOnFlights(flightId));
+    //     const flight=await Flight.findByPk(flightId);
+    //     if(+dec){
+    //         await flight.decrement('totalSeats',{by:seats});
+    //     }else {
+    //         await flight.increment('totalSeats',{by:seats});
+    //     }
+    //     return flight;
+    // }
 }
 
 
